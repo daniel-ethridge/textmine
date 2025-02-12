@@ -261,6 +261,7 @@ class ScrapeMSNBCContent(BaseWebscrapeContent):
 
     def make_soup(self, url: str):
         self._soup = html_soup(url)
+        print(self.soup)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {"class": re.compile(".*headline.*")}).text
@@ -337,6 +338,7 @@ class ScrapeMotherJonesContent(BaseWebscrapeContent):
 
     def make_soup(self, url: str):
         self._soup = html_soup(url)
+        print(self.soup.prettify())
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {"class": re.compile(".*title.*")}).text
@@ -836,20 +838,11 @@ class ScrapeReutersContent(BaseWebscrapeContent):
 
 
 def main():
-    scraper = ScrapeFoxContent()
-    links = scraper.get_search_results("mass shooting")
-    # scraper.make_soup("https://www.foxnews.com/politics/damn-right-liz-cheneys-past-usaid-employment-faces-backlash-after-lashing-out-elon-musk")
-    # scraper.scrape_content()
-    # links_ = scraper.get_search_results("mass shootings", 100)
-    print()
-
-    # scraper.make_soup("https://abcnews.go.com/US/35-crashes-eielson-air-force-base-alaska-pilot/story?id=118207654")
-    #
-    # scraper.scrape_title()
-    # print(scraper.title)
-    #
-    # scraper.scrape_content()
-    # print(scraper.content)
+    url = "https://apnews.com/article/inflation-economy-federal-reserve-48e77a855078b37bf3ccd58c9db94c82"
+    ap = ScrapeAPContent()
+    ap.make_soup(url)
+    ap.scrape_title()
+    
 
 
 if __name__ == "__main__":
