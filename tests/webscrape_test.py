@@ -5,7 +5,7 @@ import textmine.webscrape as webscrape
 def test_mother_jones():
     url = "https://www.motherjones.com/politics/2025/02/donald-trump-elon-musk-jd-vance-ignore-defy-court-orders/"
     jones = webscrape.ScrapeMotherJonesContent()
-    assert jones.get_domain() == "motherjones.com"
+    assert jones.get_domain() == "motherjnes.com"
     jones.make_soup(url)
     jones.scrape_title()
     jones.scrape_content()
