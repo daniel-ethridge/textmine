@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+textmine/__init__.py
+textmine/api.py
+textmine/parse_json.py
+textmine/webscrape.py
+textmine.egg-info/PKG-INFO
+textmine.egg-info/SOURCES.txt
+textmine.egg-info/dependency_links.txt
+textmine.egg-info/requires.txt
+textmine.egg-info/top_level.txt
+textmine/api/news_api.py

@@ -1,0 +1,182 @@
+{
+  "associated-press": {
+    "bias": -2.1,
+    "factuality": 0.8,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "cnn": {
+    "bias": -3.6,
+    "factuality": 3.7,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "msnbc": {
+    "bias": -6.4,
+    "factuality": 5.8,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "fox": {
+    "bias": 6.7,
+    "factuality": 6.1,
+    "credibility": "low",
+    "traffic": "high"
+  },
+  "wall-street-journal": {
+    "bias": 4.2,
+    "factuality": 2.4,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "new-york-post": {
+    "bias": 4.9,
+    "factuality": 5.9,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "new-york-times": {
+    "bias": -4.1,
+    "factuality": 1.4,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "mother-jones": {
+    "bias": -4.4,
+    "factuality": 1,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "the-center-square": {
+    "bias": 3.9,
+    "factuality": 2.9,
+    "credibility": "high",
+    "traffic": "medium"
+  },
+  "the-dispatch": {
+    "bias": 3.6,
+    "factuality": 1,
+    "credibility": "high",
+    "traffic": "medium"
+  },
+  "oan": {
+    "bias": 7.9,
+    "factuality": 8.0,
+    "credibility": "low",
+    "traffic": "high"
+  },
+  "occupy-democrats": {
+    "bias": -8.7,
+    "factuality": 8.0,
+    "credibility": "low",
+    "traffic": "high"
+  },
+  "bbc": {
+    "bias": -2,
+    "factuality": 0.8,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "abc": {
+    "bias": -3.3,
+    "factuality": 1.1,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "usa-today": {
+    "bias": -2.8,
+    "factuality": 2.1,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "cnbc": {
+    "bias": -3.3,
+    "factuality": 2.2,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "national-review": {
+    "bias": 6.6,
+    "factuality": 3.5,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "the-federalist": {
+    "bias": 7.8,
+    "factuality": 6.4,
+    "credibility": "low",
+    "traffic": "high"
+  },
+  "reason": {
+    "bias": 3.8,
+    "factuality": 1.7,
+    "credibility": "high",
+    "traffic": "medium"
+  },
+  "washington-examiner": {
+    "bias": 3.8,
+    "factuality": 2.2,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "real-clear-politics": {
+    "bias": 3.4,
+    "factuality": 2.6,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "vox": {
+    "bias": -6.4,
+    "factuality": 1.9,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "slate": {
+    "bias": -6.4,
+    "factuality": 2.7,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "the-nation": {
+    "bias": -6.4,
+    "factuality": 1.9,
+    "credibility": "high",
+    "traffic": "medium"
+  },
+  "the-daily-wire": {
+    "bias": 7.2,
+    "factuality": 5.9,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "huffington-post": {
+    "bias": -6.4,
+    "factuality": 4.6,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "the-intercept": {
+    "bias": -6.8,
+    "factuality": 2.4,
+    "credibility": "high",
+    "traffic": "high"
+  },
+  "the-western-journal": {
+    "bias": 8.0,
+    "factuality": 6.3,
+    "credibility": "low",
+    "traffic": "high"
+  },
+  "daily-kos": {
+    "bias": 8.1,
+    "factuality": 5.5,
+    "credibility": "medium",
+    "traffic": "high"
+  },
+  "forbes": {
+    "bias": 1.3,
+    "factuality": 2.0,
+    "credibility": "high",
+    "traffic": "high"
+  }
+}
