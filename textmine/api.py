@@ -355,6 +355,33 @@ class NewsApiDotOrgHeadlines(BaseApiGetRequest):
         return False, self._response
 
 
+class NytApi(BaseApiGetRequest):
+    def __init__(self, api_key_: str, parser: ParseJsonBase=None):
+        super().__init__(api_key_, parser)
+
+        self._endpoint = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+
+    def page(self, page_):
+        self._params["page"] = page_
+        return self
+
+    def q(self, query: str):
+        self._params["q"] = query
+        return self
+
+
+    def get(self) -> Tuple[bool, Union[Dict, requests.Response]]:
+        self._params["api-key"] = self._api_key
+        self._response = requests.get(self._endpoint, params=self._params)
+        self._params.clear()
+        if self._response.status_code == 200:
+            if self._parser is not None:
+                return True, self._parser.parse(self._response.json())
+            else:
+                return True, self._response.json()
+        return False, self._response
+
+
 if __name__ == "__main__":
     api_key = read_api_key_from_file("../../text-mining-project/text_mining/api_keys/news-api-key.txt")
     news = NewsApiDotOrgEverything(api_key)

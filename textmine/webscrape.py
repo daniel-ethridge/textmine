@@ -15,6 +15,7 @@ import re
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver import ActionChains
+from newspaper import Article
 
 
 def htmlify_query(query):
@@ -124,7 +125,7 @@ class BaseGetResults(abc.ABC):
 
 
     @abc.abstractmethod
-    def get_search_results(self, query, max_results=None):
+    def get_search_results(self, query, max_results=1000):
         pass
 
 class ScrapeAPContent(BaseWebscrapeContent, BaseGetResults):
@@ -150,7 +151,7 @@ class ScrapeAPContent(BaseWebscrapeContent, BaseGetResults):
                 text_list.append(tag.text)
         self._site_content = " ".join(text_list)
 
-    def get_search_results(self, query, max_results=None):
+    def get_search_results(self, query, max_results=1000):
         page = 1
         links = []
 
@@ -300,7 +301,7 @@ class ScrapeNewYorkPostContent(BaseWebscrapeContent, BaseGetResults):
         self._site_content = " ".join(tags_list)
 
 
-    def get_search_results(self, query, max_results = None):
+    def get_search_results(self, query, max_results=1000):
         page = 1
         links = []
 
@@ -328,7 +329,7 @@ class ScrapeNewYorkPostContent(BaseWebscrapeContent, BaseGetResults):
             return links[:max_results]
 
 
-class ScrapeMotherJonesContent(BaseWebscrapeContent):
+class ScrapeMotherJonesContent(BaseWebscrapeContent, BaseGetResults):
     def __init__(self):
         super().__init__()
 
@@ -347,6 +348,36 @@ class ScrapeMotherJonesContent(BaseWebscrapeContent):
         body = self.soup.find("article", {"class": re.compile(".*content.*")})
         paragraph_tags = [tag.text for tag in body.find_all("p")]
         self._site_content = " ".join(paragraph_tags)
+
+    def get_search_results(self, query, max_results=1000):
+        page = 1
+        links = []
+
+        while True:
+
+            page += 1
+            endpoint = f"https://www.motherjones.com/page/{page}/?s={htmlify_query(query)}"
+            self.make_soup(endpoint)
+            headers = self.soup.find_all("h3", {"class": re.compile(".*hed.*")})
+            tags = []
+            for header in headers:
+                tags.append(header.find("a"))
+
+            if len(tags) == 0:
+                break
+
+            for tag in tags:
+                try:
+                    links.append(tag["href"])
+                except KeyError:
+                    continue
+
+            links = list(set(links))
+            if len(links) >= max_results:
+                break
+
+        if len(links) > max_results:
+            return links[:max_results]
 
 
 class ScrapeCenterSquareContent(BaseWebscrapeContent):
@@ -410,7 +441,7 @@ class ScrapeOANNContent(BaseWebscrapeContent, BaseGetResults):
         paragraph_tags = [tag.text for tag in body.find_all("p")]
         self._site_content = " ".join(paragraph_tags)
 
-    def get_search_results(self, query, max_results=None):
+    def get_search_results(self, query, max_results=1000):
         links = []
         page = 0
 
@@ -774,8 +805,7 @@ class ScrapeFoxContent(BaseWebscrapeContent, BaseGetResults):
 
         self._site_content = " ".join(tag_list)
 
-    def get_search_results(self, query, max_results=None, sleep_between_clicks=1):
-        page = 0
+    def get_search_results(self, query, max_results=1000):
         num_results = 0
         links = []
 
@@ -799,7 +829,7 @@ class ScrapeFoxContent(BaseWebscrapeContent, BaseGetResults):
                 else:
                     break
 
-            time.sleep(sleep_between_clicks)
+            time.sleep(1)
 
         content = driver.page_source
         driver.close()
@@ -838,11 +868,8 @@ class ScrapeReutersContent(BaseWebscrapeContent):
 
 
 def main():
-    url = "https://apnews.com/article/inflation-economy-federal-reserve-48e77a855078b37bf3ccd58c9db94c82"
-    ap = ScrapeAPContent()
-    ap.make_soup(url)
-    ap.scrape_title()
-    
+    scraper = ScrapeMotherJonesContent()
+    scraper.get_search_results("mass shootings", max_results=2000)
 
 
 if __name__ == "__main__":

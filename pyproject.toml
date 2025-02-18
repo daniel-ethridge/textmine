@@ -14,10 +14,11 @@ requires-python = ">=3.8"
 dependencies = [
     "requests>=2.31.0",
     "beautifulsoup4>=4.12",
-    "selenium>=4.28"
+    "selenium>=4.28",
+    "lxml_html_clean>=0.4.1",
+    "newspaper3k>=0.2.8"
 ]
 
 [tool.setuptools]
 packages = [
-    "textmine",
-    "textmine.api"]
+    "textmine"]
