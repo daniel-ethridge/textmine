@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "textmine"
+dynamic = ["version"]
+description = "Text mining tools for research"
+authors = [
+    {name = "Daniel Ethridge", email = "daniel@audiovascular.com"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12",
+    "selenium>=4.28",
+    "lxml_html_clean>=0.4.1",
+    "newspaper3k>=0.2.8"
+]
+
+[tool.setuptools]
+packages = [
+    "textmine"]
