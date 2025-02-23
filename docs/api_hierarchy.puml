@@ -1,0 +1,73 @@
+@startuml API_Hierarchy
+
+skinparam {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    ClassBackgroundColor WhiteSmoke
+}
+
+abstract class BaseApiGetRequest {
+    + {abstract} get()
+}
+
+class NewsApiDotOrgEverything {
+    - __init__(self, api_key)
+    - _endpoint: str
+    + q(q_: str): self
+    + search_in(fields: str): self
+    + sources(sources_: str): self
+    + domains(domains_: str): self
+    + exclude_domains(domains_: str): self
+    + from_date(date_: str): self
+    + to_date(date_: str): self
+    + language(lang_: str): self
+    + sort_by(sort_: str): self
+    + page_size(size_: int): self
+    + page(num_: int): self
+    + get(): tuple
+}
+
+class NewsApiDotOrgHeadlines {
+    - __init__(self, api_key)
+    - _endpoint: str
+    + country(country_: str): self
+    + category(category_: str): self
+    + sources(sources_: str): self
+    + q(q_: str): self
+    + page_size(size_: int): self
+    + page(num_: int): self
+    + get(): tuple
+}
+
+class NewsApiDotOrgDecorator {
+    - __init__(self, decorated_news, api_key)
+    + get()
+    - _endpoint
+    - _decorated_news
+}
+
+BaseApiGetRequest <|-- NewsApiDotOrgEverything
+BaseApiGetRequest <|-- NewsApiDotOrgHeadlines
+BaseApiGetRequest <|-- NewsApiDotOrgDecorator
+
+note right of BaseApiGetRequest
+    Abstract base class for
+    GET request APIs
+end note
+
+note right of NewsApiDotOrgEverything
+    Implements all parameters for
+    /everything endpoint from
+    NewsAPI.org documentation
+end note
+
+note right of NewsApiDotOrgHeadlines
+    Implements all parameters for
+    /top-headlines endpoint from
+    NewsAPI.org documentation.
+    Note: country/category cannot
+    be mixed with sources
+end note
+
+@enduml
