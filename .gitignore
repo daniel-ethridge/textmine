@@ -4,3 +4,4 @@ scratch*
 .idea
 dist
 *.egg-info/
+biases.json
