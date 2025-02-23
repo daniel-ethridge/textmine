@@ -3,4 +3,4 @@ __pycache__
 scratch*
 .idea
 dist
-*.eeg-info/
+*.egg-info/
