@@ -1,7 +1,7 @@
 import requests
 import abc
 from typing import Tuple, Union, Dict, Any
-from .parse_json import ParseJsonBase
+from ...parse_json import ParseJsonBase
 
 
 def read_api_key_from_file(path_to_file: str):

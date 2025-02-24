@@ -13,8 +13,8 @@ import numpy as np
 def scrape_youtube_comments(api_key_file,
                             video_url=None,
                             source_csv=None,
-                            song_name=None,
-                            artist=None,
+                            title=None,
+                            author=None,
                             save_dir="./",
                             max_comments=100,
                             ids_passed=False):
@@ -24,7 +24,7 @@ def scrape_youtube_comments(api_key_file,
     :param video_url:
     :param source_csv:
     :param song_name:
-    :param artist:
+    :param author:
     :param save_dir:
     :param max_comments:
     :param ids_passed:
@@ -44,8 +44,8 @@ def scrape_youtube_comments(api_key_file,
 
     # Single video passed
     if video_url:
-        song_names = [song_name]
-        artists = [artist]
+        titles = [title]
+        authors = [author]
         if ids_passed:
             video_ids = [video_url]
         else:
@@ -60,15 +60,15 @@ def scrape_youtube_comments(api_key_file,
                 data.append(row)
 
         video_ids = [row[0] for row in data]
-        song_names = [row[1] if len(row) >= 2 else None for row in data]
-        artists = [row[2] if len(row) >= 3 else None for row in data]
+        titles = [row[1] if len(row) >= 2 else None for row in data]
+        authors = [row[2] if len(row) >= 3 else None for row in data]
         if not ids_passed:
             for i, url in enumerate(video_ids):
                 video_ids[i] = re.search(r"v=[^&]*", url).group()[2:]
 
     # Zip up all song metadata and iterate
-    song_data = zip(video_ids, song_names, artists)
-    for i, (video_id, song, artist) in enumerate(song_data):
+    video_data = zip(video_ids, titles, authors)
+    for i, (video_id, song, author) in enumerate(video_data):
         # Set number of comments left to read
         comments_remaining = max_comments
         comments = []
@@ -117,7 +117,7 @@ def scrape_youtube_comments(api_key_file,
         save_path = os.path.join(save_dir,
             f"{len(comments)}"
             f"{('_' + song.lower().replace(' ', '-')) if song else ''}"
-            f"{('_' + artist.lower().replace(' ', '-')) if artist else ''}"
+            f"{('_' + author.lower().replace(' ', '-')) if author else ''}"
             f"_{video_id}.csv")
 
         with open(save_path, "w") as f:
@@ -147,8 +147,8 @@ if __name__ == "__main__":
                              "are optional and ignored if --filename (-f) is passed.")
     parser.add_argument("--save_dir", "-D", help="Directory where comments should be saved. Defaults to "
                                                  "current directory.")
-    parser.add_argument("--song_name", "-s", help="Name of the song.")
-    parser.add_argument("--artist", "-a", help="Name of the artist who wrote the song.")
+    parser.add_argument("--title", "-t", help="Name of the Youtube Video or another descriptive title.")
+    parser.add_argument("--author", "-a", help="Name of the author who created the video or otherwise.")
     parser.add_argument("--max_comments", "-m", help="Maximum number of comments to request from the API."
                                                      "Default 100.")
     parser.add_argument("--ids", "-i", action="store_true", help="To pass video IDs instead of "
@@ -156,14 +156,14 @@ if __name__ == "__main__":
 
     # Parse arguments
     args = parser.parse_args()
-    if not args.video and not args.source_csv:
+    if not args.video_url and not args.source_csv:
         parser.error("Either --video_url (-U) or --source_csv (-C) must be passed.")
 
     scrape_youtube_comments(args.api_key_file,
                             args.video_url,
                             args.source_csv,
-                            args.song_name,
-                            args.artist,
+                            args.title,
+                            args.author,
                             args.save_dir if args.save_dir else "./",
                             int(args.max_comments) if args.max_comments else 100,
                             args.ids)

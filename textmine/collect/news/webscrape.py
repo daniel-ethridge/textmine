@@ -18,39 +18,17 @@ from selenium.webdriver import ActionChains
 from newspaper import Article
 
 
-def htmlify_query(query):
+def _htmlify_query(query):
     return query.replace(" ", "+")
 
 
-def html_soup(content: str):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+def _html_soup(content: str, headers=None):
+    # headers = {
+    #     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     response = requests.get(content, headers=headers)
     # return BeautifulSoup(response.content, "html5lib")
     return BeautifulSoup(response.content, "html.parser")
 
-def rate_limited_request(driver, url):
-    driver.get(url)
-
-def load_proxy_list(proxy_file='proxies.json'):
-    try:
-        with open(proxy_file, 'r') as f:
-            proxies = json.load(f)
-            return [p for p in proxies if isinstance(p, str) and ':' in p]
-    except FileNotFoundError:
-        return []
-
-class SimpleProxyManager:
-    def __init__(self, proxies):
-        self.proxies = proxies
-        self.current_index = 0
-        
-    def get_proxy(self):
-        if not self.proxies:
-            return None
-        proxy = self.proxies[self.current_index]
-        self.current_index = (self.current_index + 1) % len(self.proxies)
-        return proxy
 
 def selenium_soup(content: str, check_for_modal: bool=False, browser="chrome"):
     driver = webdriver.Firefox()
@@ -137,7 +115,7 @@ class ScrapeAPContent(BaseWebscrapeContent, BaseGetResults):
         return "apnews.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self._soup.find("h1", class_="Page-headline").text
@@ -158,7 +136,7 @@ class ScrapeAPContent(BaseWebscrapeContent, BaseGetResults):
         while True:
 
             page += 1
-            endpoint = f"https://apnews.com/search?q={htmlify_query(query)}&s=0&p={page}"
+            endpoint = f"https://apnews.com/search?q={_htmlify_query(query)}&s=0&p={page}"
             self.make_soup(endpoint)
             tags = self.soup.find_all("a", {"class": re.compile("Link.*")})
 
@@ -192,7 +170,7 @@ class ScrapeCNNContent(BaseWebscrapeContent):
         return "cnn.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", id="maincontent").text
@@ -239,7 +217,7 @@ class ScrapeBBCContent(BaseWebscrapeContent):
         return "bbc.com,bbc.co.uk"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.select("article > div > h1")[0].text
@@ -261,7 +239,7 @@ class ScrapeMSNBCContent(BaseWebscrapeContent):
         return "msnbc.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
         print(self.soup)
 
     def scrape_title(self):
@@ -286,7 +264,7 @@ class ScrapeNewYorkPostContent(BaseWebscrapeContent, BaseGetResults):
         return "nypost.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", class_="headline headline--single-fallback").text
@@ -308,7 +286,7 @@ class ScrapeNewYorkPostContent(BaseWebscrapeContent, BaseGetResults):
         while True:
 
             page += 1
-            endpoint = f"https://nypost.com/search/{htmlify_query(query)}/page/{page}/?orderby=relevance"
+            endpoint = f"https://nypost.com/search/{_htmlify_query(query)}/page/{page}/?orderby=relevance"
             self.make_soup(endpoint)
             tags = self.soup.find_all("a", {"class": re.compile("postid.*")})
 
@@ -338,7 +316,7 @@ class ScrapeMotherJonesContent(BaseWebscrapeContent, BaseGetResults):
         return "motherjones.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
         print(self.soup.prettify())
 
     def scrape_title(self):
@@ -356,7 +334,7 @@ class ScrapeMotherJonesContent(BaseWebscrapeContent, BaseGetResults):
         while True:
 
             page += 1
-            endpoint = f"https://www.motherjones.com/page/{page}/?s={htmlify_query(query)}"
+            endpoint = f"https://www.motherjones.com/page/{page}/?s={_htmlify_query(query)}"
             self.make_soup(endpoint)
             headers = self.soup.find_all("h3", {"class": re.compile(".*hed.*")})
             tags = []
@@ -389,7 +367,7 @@ class ScrapeCenterSquareContent(BaseWebscrapeContent):
         return "thecentersquare.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {"class": re.compile(".*headline.*")}).text
@@ -410,7 +388,7 @@ class ScrapeDispatchContent(BaseWebscrapeContent):
         return "thedispatch.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {"class": re.compile(".*h1.*")}).text
@@ -431,7 +409,7 @@ class ScrapeOANNContent(BaseWebscrapeContent, BaseGetResults):
         return "oann.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {"class": re.compile(".*title.*")}).text
@@ -447,7 +425,7 @@ class ScrapeOANNContent(BaseWebscrapeContent, BaseGetResults):
 
         while True:
             page += 1
-            query = htmlify_query(query)
+            query = _htmlify_query(query)
             endpoint = f"https://www.oann.com/page/{page}/?s={query}"
             self.make_soup(endpoint)
             entries = self.soup.find_all("h2", class_="entry-title")
@@ -477,7 +455,7 @@ class ScrapeABCContent(BaseWebscrapeContent):
         return "abcnews.go.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         self._title = self.soup.find("h1", {
@@ -501,7 +479,7 @@ class ScrapeUSATodayContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -519,7 +497,7 @@ class ScrapeCNBCContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -537,7 +515,7 @@ class ScrapeNationalReviewContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -555,7 +533,7 @@ class ScrapeFederalistContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -573,7 +551,7 @@ class ScrapeReasonContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -591,7 +569,7 @@ class ScrapeWashingtonExaminerContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -609,7 +587,7 @@ class ScrapeRealClearPoliticsContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -627,7 +605,7 @@ class ScrapeVoxContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -645,7 +623,7 @@ class ScrapeSlateContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -663,7 +641,7 @@ class ScrapeTheNationContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -681,7 +659,7 @@ class ScrapeDailyWireContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -699,7 +677,7 @@ class ScrapeHuffingtonPostContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -717,7 +695,7 @@ class ScrapeInterceptContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -735,7 +713,7 @@ class ScrapeWesternJournalContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -753,7 +731,7 @@ class ScrapeDailyKosContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -771,7 +749,7 @@ class ScrapeForbesContent(BaseWebscrapeContent):
         return ""
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
 
     def scrape_title(self):
         pass
@@ -788,7 +766,7 @@ class ScrapeFoxContent(BaseWebscrapeContent, BaseGetResults):
         return "foxnews.com"
 
     def make_soup(self, url: str):
-        self._soup = html_soup(url)
+        self._soup = _html_soup(url)
         with open("test.html", "w") as f:
             f.write(self.soup.prettify())
 

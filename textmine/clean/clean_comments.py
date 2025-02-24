@@ -5,8 +5,8 @@ from nltk.stem import WordNetLemmatizer
 from spellchecker import SpellChecker
 import re
 
-import constants
-import custom_list_utils as list_utils
+import textmine.utils.constants as constants
+import textmine.utils.custom_list_utils as list_utils
 from unidecode import unidecode
 from nltk.corpus import stopwords as sw
 
